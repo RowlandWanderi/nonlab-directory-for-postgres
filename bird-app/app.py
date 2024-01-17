@@ -12,8 +12,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
 migrate = Migrate(app, db)
-instance = db.init_app(app)
-instance
+db.init_app(app)
+
 api = Api(app)
 
 class Birds(Resource):
@@ -23,3 +23,11 @@ class Birds(Resource):
         return make_response(jsonify(birds), 200)
 
 api.add_resource(Birds, '/birds')
+
+class BirdByID(Resource):
+    def get(self, id):
+        bird = Bird.query.filter_by(id=id).first().to_dict()
+        return make_response(jsonify(bird), 200)
+
+api.add_resource(BirdByID, '/birds/<int:id>')
+
